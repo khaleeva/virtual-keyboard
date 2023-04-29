@@ -24,12 +24,3 @@ const generateButton = (data) => {
 }
 
 
-// const typeText = () => {
-//     let text = this.getCurrentButton()
-//     console.log(text)
-//     const textArea = document.querySelector('textarea');
-//
-// }
-//
-//
-// typeText()

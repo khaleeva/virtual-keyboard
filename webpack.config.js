@@ -18,7 +18,7 @@ module.exports = {
     entry:
         [path.resolve(__dirname, 'src', 'index.js')],
     output: {
-        path: path.resolve(__dirname, 'virtual-keyboardEn'),
+        path: path.resolve(__dirname, 'virtual-keyboard'),
         clean: true,
         filename: 'index.js',
         assetModuleFilename: 'assets/[name][ext]'
@@ -55,18 +55,6 @@ module.exports = {
                         "sass-loader",
                     ],
                 },
-                // {
-                //     test: /\.(?:js|mjs|cjs)$/,
-                //     exclude: /node_modules/,
-                //     use: {
-                //         loader: 'babel-loader',
-                //         options: {
-                //             presets: [
-                //                 ['@babel/preset-env', {targets: "defaults"}]
-                //             ]
-                //         }
-                //     }
-                // },
 
             ]
         }
