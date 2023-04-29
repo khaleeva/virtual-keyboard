@@ -1,20 +1,37 @@
 import {macKeyboardRU} from "./keyboard-ru";
 
+import {Buttons} from "./Button";
+
 export const RenderKeyboard = () => {
 
-    const keyboard = document.querySelector('.keyboard')
 
-    macKeyboardRU.map((keyboards, index) => {
-        keyboard.innerHTML += `<div class="row row_${index}">${keyboards.map((key, index) =>
-            `<button class="button" data-width=${key.width}>${key.key}</button>`).join("")}</div>`
-    })
-
-    if(document.querySelectorAll('.button')){
-        let btns = document.querySelectorAll('.button');
-        btns.forEach(btn => {
-            const width = btn.dataset.width;
-            btn.style.width = `${width * 60}px`;
+    const renderButtonsToDom = () => {
+        const keyboard = document.querySelector('.keyboard')
+        generateButton(macKeyboardRU).forEach(article => {
+            keyboard.append(article.generateButtons())
         })
     }
 
+    const generateButton = (data) => {
+        let buttons = [];
+        data.forEach(btn => {
+            buttons.push(new Buttons(btn))
+        });
+        return buttons;
+    }
+
+
+    renderButtonsToDom()
+
+
+
+
+
+
+
+
+
+
+
 }
+
