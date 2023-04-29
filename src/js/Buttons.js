@@ -10,9 +10,15 @@ export class Buttons {
         btn_container.className = 'button';
         btn_container.style.width = `${this.width * 60}px`;
         btn_container.innerHTML = `${this.key}`
+        btn_container.addEventListener('click', (e) => this.typeText(e))
         return btn_container
     }
 
+
+    typeText (e) {
+        const textArea = document.querySelector('textarea');
+        textArea.value += e.target.innerText;
+    }
 
 
 }

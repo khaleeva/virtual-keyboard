@@ -60,7 +60,7 @@ export const macKeyboardRU = [
         {"key": "Ctrl", "code": "ControlLeft", "width": "1"},
         {"key": "Option", "code": "AltLeft", "width": "1"},
         {"key": "Command", "code": "MetaLeft", "width": "1.5"},
-        {"key": " ", "code": "Space", "width": '5.95'},
+        {"key": "&nbsp;", "code": "Space", "width": '5.95'},
         {"key": "Command", "code": "MetaRight", "width": "1.5"},
         {"key": "Option", "code": "AltRight", "width": "1"},
         {"key": "←", "code": "ArrowLeft", "width": "1"},
