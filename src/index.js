@@ -10,7 +10,7 @@ window.onload = function () {
 
 }
 
-const textArea = document.querySelector('textarea');
+
 const renderButtonsToDom = () => {
     const keyboard = document.querySelector('.keyboard')
     generateButton(macKeyboardRU).forEach(btn => {
@@ -19,7 +19,7 @@ const renderButtonsToDom = () => {
 }
 
 const generateButton = (data) => {
-
+    const textArea = document.querySelector('textarea');
     let buttons = [];
     data.forEach(btn => {
         buttons.push(new Buttons(textArea, btn))

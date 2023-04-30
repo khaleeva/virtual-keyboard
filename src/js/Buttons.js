@@ -17,6 +17,7 @@ export class Buttons {
         btn_container.innerHTML = `${this.key}`;
         btn_container.setAttribute('data-code', this.code);
         if (this.type) {
+            btn_container.className = 'button button_colored'
             btn_container.setAttribute('data-type', this.type);
             btn_container.addEventListener('click', (e) => {
                 const functionName = e.target.dataset.type;
@@ -33,11 +34,14 @@ export class Buttons {
             });
 
         } else {
+            if (this.code === 'ArrowUp' || this.code === 'ArrowDown' || this.code === 'ArrowRight' || this.code === 'ArrowLeft') {
+                btn_container.className = 'button button_colored'
+            }
             btn_container.addEventListener('click', (e) => {
-                this.handleClick(e)
+                this.handleClickChar(e)
                 e.target.blur();
             })
-            document.addEventListener('keydown', (e) => this.handleKeyDown(e))
+            document.addEventListener('keydown', (e) => this.handleKeyDownChar(e))
 
         }
 
@@ -47,7 +51,7 @@ export class Buttons {
         return btn_container
     }
 
-    handleKeyDown(e) {
+    handleKeyDownChar(e) {
         const physicalKey = this.code;
         const button = document.querySelector(`button[data-code="${e.code}"]`);
         if (button) {
@@ -61,7 +65,7 @@ export class Buttons {
     }
 
 
-    handleClick(e) {
+    handleClickChar(e) {
         const button = e.target;
         button.focus();
         this.node.value += this.key;
@@ -69,29 +73,33 @@ export class Buttons {
 
 
     del() {
+        this.node.focus()
         const currentValue = this.node.value;
         const start = this.node.selectionStart;
-
-        if (start === currentValue.length) {
-            this.node.value = currentValue.slice(0, -1);
-            this.node.selectionStart = start - 1;
-            this.node.selectionEnd = start - 1;
-        } else if (start > 0) {
-            this.node.value = currentValue.slice(0, start - 1) + currentValue.slice(start);
-            this.node.selectionStart = start - 1;
-            this.node.selectionEnd = start - 1;
-        } else {
-            this.node.value = currentValue.slice(1);
-            this.node.selectionStart = 0;
-            this.node.selectionEnd = 0;
+        if (start < currentValue.length) {
+            this.node.value = currentValue.slice(0, start) + currentValue.slice(start + 1)
+            this.node.selectionStart = start;
+            this.node.selectionEnd = start;
+        } else{
+            this.node.selectionStart = currentValue.length;
+            this.node.selectionEnd = currentValue.length;
         }
 
     }
 
 
     backspace() {
+        this.node.focus()
         const currentValue = this.node.value;
-        this.node.value = currentValue.slice(0, -1);
+        const start = this.node.selectionStart;
+
+        if (start === 0) {
+            return;
+        } else {
+            this.node.value = currentValue.slice(0, start - 1) + currentValue.slice(start);
+            this.node.selectionStart = start - 1;
+            this.node.selectionEnd = start - 1;
+        }
     }
 
 

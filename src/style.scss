@@ -47,6 +47,10 @@ textarea{
   cursor: pointer;
   outline: none;
 
+  &_colored{
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
 
   &:focus{
     background-color: #ff8c72;
