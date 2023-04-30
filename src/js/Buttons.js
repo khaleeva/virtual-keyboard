@@ -1,4 +1,5 @@
-import {logPlugin} from "@babel/preset-env/lib/debug";
+
+
 
 export class Buttons {
     constructor(node, {key, code, width, type, ...rest}) {
@@ -7,23 +8,36 @@ export class Buttons {
         this.code = code;
         this.width = width;
         this.type = type;
+        this.isCapsLockOn = false;
+        this.btnContainer = null;
 
     }
 
+
     generateButtons() {
-        let btn_container = document.createElement('button');
-        btn_container.className = 'button';
-        btn_container.style.width = `${this.width * 60}px`;
-        btn_container.innerHTML = `${this.key}`;
-        btn_container.setAttribute('data-code', this.code);
+        this.btnContainer = document.createElement('button');
+        this.btnContainer.className = 'button';
+        this.btnContainer.style.width = `${this.width * 60}px`;
+        this.btnContainer.setAttribute('data-code', this.code);
+        this.btnContainer.setAttribute('data-key', this.key);
+        this.btnContainer.innerHTML = `${this.key}`
+
+
         if (this.type) {
-            btn_container.className = 'button button_colored'
-            btn_container.setAttribute('data-type', this.type);
-            btn_container.addEventListener('click', (e) => {
+            this.btnContainer.className = 'button button_colored'
+            this.btnContainer.setAttribute('data-type', this.type);
+            this.btnContainer.addEventListener('click', (e) => {
                 const functionName = e.target.dataset.type;
                 this[functionName]()
                 e.target.blur();
             })
+
+            if (this.type === 'caps') {
+                this.btnContainer.addEventListener('click', (e) => {
+                    this.btnContainer.classList.toggle('button_caps')
+                    this.updateButtonContainer()
+                })
+            }
 
             document.addEventListener('keydown', (e) => {
                 if (e.code === this.code) {
@@ -35,9 +49,9 @@ export class Buttons {
 
         } else {
             if (this.code === 'ArrowUp' || this.code === 'ArrowDown' || this.code === 'ArrowRight' || this.code === 'ArrowLeft') {
-                btn_container.className = 'button button_colored'
+                this.btnContainer.className = 'button button_colored'
             }
-            btn_container.addEventListener('click', (e) => {
+            this.btnContainer.addEventListener('click', (e) => {
                 this.handleClickChar(e)
                 e.target.blur();
             })
@@ -48,8 +62,15 @@ export class Buttons {
         document.addEventListener('keyup', (e) => e.target.blur())
 
 
-        return btn_container
+        return this.btnContainer
     }
+
+    caps(){
+        const button_caps = document.querySelector(`button[data-type="caps"]`);
+        this.isCapsLockOn = !button_caps.classList.contains('button_caps');
+        this.updateButtonContainer()
+    }
+
 
     handleKeyDownChar(e) {
         const physicalKey = this.code;
@@ -58,18 +79,45 @@ export class Buttons {
             button.focus()
         }
         if (e.code === physicalKey) {
-            this.node.value += this.key;
+            const button_caps = document.querySelector(`button[data-type="caps"]`);
+            let isCapsLockOn = button_caps.classList.contains('button_caps');
+            const charToAdd = isCapsLockOn ? this.key.toUpperCase() : this.key.toLowerCase();
+            this.node.value += charToAdd;
             e.preventDefault();
         }
 
     }
 
-
     handleClickChar(e) {
         const button = e.target;
         button.focus();
-        this.node.value += this.key;
+        const button_caps = document.querySelector(`button[data-type="caps"]`);
+        let isCapsLockOn = button_caps.classList.contains('button_caps');
+        const charToAdd = isCapsLockOn ? this.key.toUpperCase() : this.key.toLowerCase();
+        this.node.value += charToAdd;
     }
+
+    updateButtonContainer(){
+        const buttons = document.querySelectorAll('button')
+        if(this.isCapsLockOn){
+            buttons.forEach(btn => {
+                if(!btn.dataset.type){
+                    let key = btn.dataset.key;
+                    btn.innerHTML = `${key.toUpperCase()}`
+                }
+            })
+
+        } else {
+            buttons.forEach(btn => {
+                let key = btn.dataset.key;
+                btn.innerHTML = `${key.toLowerCase()}`
+            })
+        }
+
+        return this.isCapsLockOn
+
+    }
+
 
 
     del() {
@@ -80,7 +128,7 @@ export class Buttons {
             this.node.value = currentValue.slice(0, start) + currentValue.slice(start + 1)
             this.node.selectionStart = start;
             this.node.selectionEnd = start;
-        } else{
+        } else {
             this.node.selectionStart = currentValue.length;
             this.node.selectionEnd = currentValue.length;
         }
@@ -101,6 +149,11 @@ export class Buttons {
             this.node.selectionEnd = start - 1;
         }
     }
+
+
+
+
+
 
 
 }

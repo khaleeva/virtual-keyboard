@@ -30,7 +30,6 @@ export const macKeyboardRU = [
     {"key": "ъ", "code": "BracketRight", "width": "1", 'type': '',},
     {"key": "\\", "code": "Backslash", "width": "1", 'type': '',},
     {"key": "del", "code": "Delete", "width": "1", 'type': 'del'},
-
     {"key": "Caps Lock", "code": "CapsLock", "width": "2.25", 'type': 'caps'},
     {"key": "ф", "code": "KeyA", "width": "1", 'type': ''},
     {"key": "ы", "code": "KeyS", "width": "1", 'type': '',},

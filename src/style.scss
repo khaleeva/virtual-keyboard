@@ -51,6 +51,11 @@ textarea{
     background-color: rgba(0, 0, 0, 0.7);
   }
 
+  &_caps{
+    background-color: #ff8c72;
+    border: 1px solid #ff8c72;
+  }
+
 
   &:focus{
     background-color: #ff8c72;
