@@ -1,3 +1,5 @@
+import {logPlugin} from "@babel/preset-env/lib/debug";
+
 export class Buttons {
     constructor(node, {key, code, width, type, ...rest}) {
         this.node = node;
@@ -68,14 +70,29 @@ export class Buttons {
 
     del() {
         const currentValue = this.node.value;
-        this.node.value = currentValue.slice(0, -1);
+        const start = this.node.selectionStart;
+
+        if (start === currentValue.length) {
+            this.node.value = currentValue.slice(0, -1);
+            this.node.selectionStart = start - 1;
+            this.node.selectionEnd = start - 1;
+        } else if (start > 0) {
+            this.node.value = currentValue.slice(0, start - 1) + currentValue.slice(start);
+            this.node.selectionStart = start - 1;
+            this.node.selectionEnd = start - 1;
+        } else {
+            this.node.value = currentValue.slice(1);
+            this.node.selectionStart = 0;
+            this.node.selectionEnd = 0;
+        }
+
     }
+
 
     backspace() {
         const currentValue = this.node.value;
         this.node.value = currentValue.slice(0, -1);
     }
-
 
 
 }
