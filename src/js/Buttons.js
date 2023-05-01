@@ -90,8 +90,13 @@ export class Buttons {
 
                 this.btnContainer.addEventListener('mouseup', (e) => {
                     this.btnContainer.classList.remove('button_shift')
-                    this.isCapsLockOn = false
-                    this.updateButtonContainer()
+
+                    const capsButton = document.querySelector(`button[data-type='caps']`);
+                    if(!capsButton.classList.contains('button_caps')){
+                        this.isCapsLockOn = false
+                        this.updateButtonContainer()
+                    }
+
                 })
 
                 document.addEventListener('keydown', (e) => {
@@ -108,8 +113,11 @@ export class Buttons {
                     if (e.key === 'Shift') {
                         this.isKeyPressed = false;
                         this.btnContainer.classList.remove('button_shift')
-                        this.isCapsLockOn = false
-                        this.updateButtonContainer()
+                        const capsButton = document.querySelector(`button[data-type='caps']`);
+                        if(!capsButton.classList.contains('button_caps')){
+                            this.isCapsLockOn = false
+                            this.updateButtonContainer()
+                        }
                     }
                 })
 
