@@ -1,6 +1,5 @@
 
 
-
 export class Buttons {
     constructor(node, {key, code, width, type, ...rest}) {
         this.node = node;
@@ -41,7 +40,7 @@ export class Buttons {
 
             document.addEventListener('keydown', (e) => {
                 if (e.code === this.code) {
-                    const functionName = 'backspace';
+                    const functionName = this.type;
                     this[functionName]();
                     e.preventDefault();
                 }
@@ -114,8 +113,6 @@ export class Buttons {
             })
         }
 
-        return this.isCapsLockOn
-
     }
 
 
@@ -140,18 +137,32 @@ export class Buttons {
         this.node.focus()
         const currentValue = this.node.value;
         const start = this.node.selectionStart;
+        const end = this.node.selectionEnd;
 
         if (start === 0) {
             return;
-        } else {
+        }
+        else {
             this.node.value = currentValue.slice(0, start - 1) + currentValue.slice(start);
             this.node.selectionStart = start - 1;
             this.node.selectionEnd = start - 1;
         }
+
     }
 
 
+    tab() {
+        this.node.focus()
+        const start = this.node.selectionStart;
+        console.log(start)
+        const end = this.node.selectionEnd;
 
+        if (start === end) {
+            this.node.value = this.node.value.slice(0, start) + '\t' + this.node.value.slice(start);
+            this.node.selectionStart = start + 1;
+            this.node.selectionEnd = start + 1;
+        }
+    }
 
 
 
