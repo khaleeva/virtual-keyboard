@@ -26,9 +26,10 @@ export class Buttons {
             this.btnContainer.addEventListener('click', (e) => {
                 const functionName = e.target.dataset.type;
                 this[functionName]()
-                e.target.blur();
                 e.preventDefault();
+                e.target.blur();
             })
+
 
             if (this.type === 'caps') {
                 this.btnContainer.addEventListener('click', (e) => {
@@ -83,9 +84,9 @@ export class Buttons {
 
     }
 
-    isRegisterChar(){
+    isRegisterChar() {
         const button_caps = document.querySelector(`button[data-type="caps"]`);
-        let isCapsLockActive =  button_caps.classList.contains('button_caps');
+        let isCapsLockActive = button_caps.classList.contains('button_caps');
         return isCapsLockActive ? this.key.toUpperCase() : this.key.toLowerCase();
     }
 
@@ -149,13 +150,11 @@ export class Buttons {
 
 
     tab() {
-        this.node.focus()
-        const start = this.node.selectionStart;
-        const end = this.node.selectionEnd;
-        this.node.value = this.node.value.substring(0, start) + '\t' + this.node.value.substring(end);
-        this.node.selectionStart = start + 1;
-        console.log(this.node.selectionStart)
-        this.node.selectionEnd = end + 1;
+        let start = this.node.selectionStart;
+        let end = this.node.selectionEnd;
+        this.node.value = this.node.value.substring(0, start) + '  ' + this.node.value.substring(end);
+        this.node.selectionStart = start + 2;
+        this.node.selectionEnd = end + 2;
     }
 
 
