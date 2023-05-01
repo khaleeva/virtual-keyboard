@@ -6,31 +6,32 @@ import {Buttons} from "./js/Buttons";
 
 
 window.onload = function () {
-    const container = document.createElement('div')
-    container.classList.add('container')
-    const h1 = document.createElement('h1')
-    h1.innerText = 'Virtual Keyboard';
-    const textarea = document.createElement('textarea');
-    const keyboard = document.createElement('div')
-    keyboard.classList.add('keyboard')
-    textarea.rows = '10';
-    container.append(h1)
-    container.append(textarea)
-    container.append(keyboard)
-    document.querySelector('body').append(container)
-    renderButtonsToDom()
-
+    generateHtml();
+    if(document.querySelector('.keyboard')){
+        renderButtonsToDom();
+    }
 
 }
 
 
-const renderButtonsToDom = () => {
+const generateHtml= () => {
+    document.querySelector('body').innerHTML = `<div class="container">
+            <h1>Virtual Keyboard</h1>
+            <textarea rows="10"></textarea>
+            <div class="keyboard"></div>
+            <h2>Клавиатура создана в операционной системе MacOs</h2>
+        </div>`
+}
 
+
+const renderButtonsToDom = () => {
     const keyboard = document.querySelector('.keyboard')
     generateButton(macKeyboardRU).forEach(btn => {
         keyboard.append(btn.generateButtons())
     })
 }
+
+
 
 const generateButton = (data) => {
     const textArea = document.querySelector('textarea');

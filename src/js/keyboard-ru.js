@@ -1,6 +1,5 @@
 export const macKeyboardRU = [
 
-    // {"key": "`", "code": "Backquote", "width": "1"},
     {"key": "ё", "code": "Backslash", "width": "1", 'type': ''},
     {"key": "1", "code": "Digit1", "width": "1", 'type': ''},
     {"key": "2", "code": "Digit2", "width": "1", 'type': ''},
