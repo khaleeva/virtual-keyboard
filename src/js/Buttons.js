@@ -1,5 +1,3 @@
-
-
 export class Buttons {
     constructor(node, {key, code, width, type, ...rest}) {
         this.node = node;
@@ -29,6 +27,7 @@ export class Buttons {
                 const functionName = e.target.dataset.type;
                 this[functionName]()
                 e.target.blur();
+                e.preventDefault();
             })
 
             if (this.type === 'caps') {
@@ -64,7 +63,7 @@ export class Buttons {
         return this.btnContainer
     }
 
-    caps(){
+    caps() {
         const button_caps = document.querySelector(`button[data-type="caps"]`);
         this.isCapsLockOn = !button_caps.classList.contains('button_caps');
         this.updateButtonContainer()
@@ -78,29 +77,30 @@ export class Buttons {
             button.focus()
         }
         if (e.code === physicalKey) {
-            const button_caps = document.querySelector(`button[data-type="caps"]`);
-            let isCapsLockOn = button_caps.classList.contains('button_caps');
-            const charToAdd = isCapsLockOn ? this.key.toUpperCase() : this.key.toLowerCase();
-            this.node.value += charToAdd;
+            this.node.value += this.isRegisterChar();
             e.preventDefault();
         }
 
     }
 
-    handleClickChar(e) {
-        const button = e.target;
-        button.focus();
+    isRegisterChar(){
         const button_caps = document.querySelector(`button[data-type="caps"]`);
-        let isCapsLockOn = button_caps.classList.contains('button_caps');
-        const charToAdd = isCapsLockOn ? this.key.toUpperCase() : this.key.toLowerCase();
-        this.node.value += charToAdd;
+        let isCapsLockActive =  button_caps.classList.contains('button_caps');
+        return isCapsLockActive ? this.key.toUpperCase() : this.key.toLowerCase();
     }
 
-    updateButtonContainer(){
+    handleClickChar(e) {
+        const button = e.target;
+        button.focus()
+        this.node.value += this.isRegisterChar();
+        e.preventDefault();
+    }
+
+    updateButtonContainer() {
         const buttons = document.querySelectorAll('button')
-        if(this.isCapsLockOn){
+        if (this.isCapsLockOn) {
             buttons.forEach(btn => {
-                if(!btn.dataset.type){
+                if (!btn.dataset.type) {
                     let key = btn.dataset.key;
                     btn.innerHTML = `${key.toUpperCase()}`
                 }
@@ -114,7 +114,6 @@ export class Buttons {
         }
 
     }
-
 
 
     del() {
@@ -137,12 +136,10 @@ export class Buttons {
         this.node.focus()
         const currentValue = this.node.value;
         const start = this.node.selectionStart;
-        const end = this.node.selectionEnd;
 
         if (start === 0) {
             return;
-        }
-        else {
+        } else {
             this.node.value = currentValue.slice(0, start - 1) + currentValue.slice(start);
             this.node.selectionStart = start - 1;
             this.node.selectionEnd = start - 1;
@@ -154,17 +151,12 @@ export class Buttons {
     tab() {
         this.node.focus()
         const start = this.node.selectionStart;
-        console.log(start)
         const end = this.node.selectionEnd;
-
-        if (start === end) {
-            this.node.value = this.node.value.slice(0, start) + '\t' + this.node.value.slice(start);
-            this.node.selectionStart = start + 1;
-            this.node.selectionEnd = start + 1;
-        }
+        this.node.value = this.node.value.substring(0, start) + '\t' + this.node.value.substring(end);
+        this.node.selectionStart = start + 1;
+        console.log(this.node.selectionStart)
+        this.node.selectionEnd = end + 1;
     }
-
-
 
 
 }
