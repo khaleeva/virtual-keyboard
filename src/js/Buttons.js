@@ -1,5 +1,3 @@
-import {logPlugin} from "@babel/preset-env/lib/debug";
-
 export class Buttons {
     constructor(node, {key, code, width, type, ...rest}) {
         this.node = node;
@@ -9,9 +7,7 @@ export class Buttons {
         this.type = type;
         this.isCapsLockOn = false;
         this.btnContainer = null;
-
     }
-
 
     generateButtons() {
         this.btnContainer = document.createElement('button');
@@ -25,42 +21,67 @@ export class Buttons {
         if (this.type) {
             this.btnContainer.className = 'button button_colored'
             this.btnContainer.setAttribute('data-type', this.type);
-            this.btnContainer.addEventListener('click', (e) => {
+            this.btnContainer.addEventListener('mousedown', (e) => {
                 const functionName = e.target.dataset.type;
                 this[functionName]()
+                e.target.classList.add('button_highlight');
                 e.preventDefault();
-                e.target.blur();
             })
 
+            this.btnContainer.addEventListener('mouseup', (e) => {
+                e.target.classList.remove('button_highlight');
+            })
 
-            if (this.type === 'caps') {
-                this.btnContainer.addEventListener('click', (e) => {
-                    this.btnContainer.classList.toggle('button_caps')
-                    this.updateButtonContainer()
-                })
-            }
 
             document.addEventListener('keydown', (e) => {
                 if (e.code === this.code) {
                     const functionName = this.type;
                     this[functionName]();
+                    const button = document.querySelector(`button[data-code="${e.code}"]`);
+                    button.classList.add('button_highlight');
                     e.preventDefault();
                 }
             });
 
+            document.addEventListener('keyup', (e) => {
+                if (e.code === this.code) {
+                    const button = document.querySelector(`button[data-code="${e.code}"]`);
+                    button.classList.remove('button_highlight');
+                }
+            });
+
+            if (this.type === 'caps') {
+                this.btnContainer.addEventListener('mousedown', (e) => {
+                    this.btnContainer.classList.toggle('button_caps')
+                    this.updateButtonContainer()
+                })
+            }
+
+
         } else {
+
+            this.btnContainer.addEventListener('mousedown', (e) => {
+                this.handleClickChar(e)
+                e.target.classList.add('button_highlight');
+            })
+
+            this.btnContainer.addEventListener('mouseup', (e) => {
+                e.target.classList.remove('button_highlight');
+            })
+
+            document.addEventListener('keydown', (e) => this.handleKeyDownChar(e));
+
+            document.addEventListener('keyup', (e) => {
+                if (e.code === this.code) {
+                    const button = document.querySelector(`button[data-code="${e.code}"]`);
+                    button.classList.remove('button_highlight');
+                }
+            })
+
             if (this.code === 'ArrowUp' || this.code === 'ArrowDown' || this.code === 'ArrowRight' || this.code === 'ArrowLeft') {
                 this.btnContainer.className = 'button button_colored'
             }
-            this.btnContainer.addEventListener('click', (e) => {
-                this.handleClickChar(e)
-                e.target.blur();
-            })
-            document.addEventListener('keydown', (e) => this.handleKeyDownChar(e))
-
         }
-
-        document.addEventListener('keyup', (e) => e.target.blur())
 
 
         return this.btnContainer
@@ -76,9 +97,7 @@ export class Buttons {
     handleKeyDownChar(e) {
         const physicalKey = this.code;
         const button = document.querySelector(`button[data-code="${e.code}"]`);
-        if (button) {
-            button.focus()
-        }
+        button.classList.add('button_highlight');
         if (e.code === physicalKey) {
             this.node.value += this.isRegisterChar();
             e.preventDefault();
@@ -93,8 +112,6 @@ export class Buttons {
     }
 
     handleClickChar(e) {
-        const button = e.target;
-        button.focus()
         this.node.value += this.isRegisterChar();
         e.preventDefault();
     }
@@ -134,7 +151,6 @@ export class Buttons {
 
     }
 
-
     backspace() {
         this.node.focus()
         const currentValue = this.node.value;
@@ -149,7 +165,6 @@ export class Buttons {
 
     }
 
-
     tab() {
         let start = this.node.selectionStart;
         let end = this.node.selectionEnd;
@@ -158,7 +173,7 @@ export class Buttons {
         this.node.selectionEnd = end + 2;
     }
 
-    enter(){
+    enter() {
         let start = this.node.selectionStart;
         let end = this.node.selectionEnd;
         this.node.value = this.node.value.substring(0, start) + '\n' + this.node.value.substring(end);

@@ -57,7 +57,7 @@ textarea{
   }
 
 
-  &:focus{
+  &_highlight{
     background-color: #ff8c72;
     transform: scale(1.1);
     border: 1px solid #ff8c72;
