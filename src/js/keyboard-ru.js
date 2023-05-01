@@ -54,7 +54,7 @@ export const macKeyboardRU = [
     {"key": "б", 'shiftKey':"б", "code": "Comma", "width": "1", 'type': ''},
     {"key": "ю", 'shiftKey':"ю", "code": "Period", "width": "1", 'type': ''},
     {"key": "/", 'shiftKey':'?', "code": "Slash", "width": "1", 'type': ''},
-    {"key": "↑", 'shiftKey':'', "code": "ArrowUp", "width": "1", 'type': ''},
+    {"key": "↑", 'shiftKey':"↑", "code": "ArrowUp", "width": "1", 'type': ''},
     {"key": "Shift", 'shiftKey':'', "code": "ShiftRight", "width": "2.25", 'type': 'shift'},
     {"key": "Ctrl", 'shiftKey':'', "code": "ControlLeft", "width": "1", 'type': 'ctrl'},
     {"key": "Option", 'shiftKey':'', "code": "AltLeft", "width": "1", 'type': 'option'},
@@ -62,9 +62,9 @@ export const macKeyboardRU = [
     {"key": ' ', 'shiftKey':'', "code": "Space", "width": '5.95', 'type': ''},
     {"key": "Command", 'shiftKey':'', "code": "MetaRight", "width": "1.5", 'type': 'cmd'},
     {"key": "Option", 'shiftKey':'', "code": "AltRight", "width": "1", 'type': 'option'},
-    {"key": "←", 'shiftKey':'', "code": "ArrowLeft", "width": "1", 'type': ''},
-    {"key": "↓", 'shiftKey':'', "code": "ArrowDown", "width": "1", 'type': ''},
-    {"key": "→", 'shiftKey':'', "code": "ArrowRight", "width": "1", 'type': ''},
+    {"key": "←", 'shiftKey':"←", "code": "ArrowLeft", "width": "1", 'type': ''},
+    {"key": "↓", 'shiftKey':"↓", "code": "ArrowDown", "width": "1", 'type': ''},
+    {"key": "→", 'shiftKey':"→", "code": "ArrowRight", "width": "1", 'type': ''},
     {"key": "Ctrl", 'shiftKey':'', "code": "ControlRight", "width": "1", 'type': 'ctrl'},
 
 
