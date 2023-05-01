@@ -1,7 +1,8 @@
 export class Buttons {
-    constructor(node, {key, code, width, type, ...rest}) {
+    constructor(node, {key, shiftKey, code, width, type, ...rest}) {
         this.node = node;
         this.key = key;
+        this.shiftKey = shiftKey;
         this.code = code;
         this.width = width;
         this.type = type;
@@ -18,6 +19,9 @@ export class Buttons {
         this.btnContainer.setAttribute('data-key', this.key);
         this.btnContainer.innerHTML = `${this.key}`
 
+        if(this.shiftKey){
+            this.btnContainer.setAttribute('data-shiftKey', this.shiftKey);
+        }
 
         if (this.type) {
             this.btnContainer.className = 'button button_colored'
@@ -82,6 +86,7 @@ export class Buttons {
             if (this.type === 'shift') {
                 this.btnContainer.addEventListener('mousedown', (e) => {
                     this.btnContainer.classList.add('button_shift')
+
                     const capsButton = document.querySelector(`button[data-type='caps']`);
                     if (capsButton.classList.contains('button_caps')) {
                         this.isCapsLockOn = false
@@ -94,6 +99,7 @@ export class Buttons {
 
                 this.btnContainer.addEventListener('mouseup', (e) => {
                     this.btnContainer.classList.remove('button_shift')
+                    window.localStorage.removeItem('shiftActive')
                     const capsButton = document.querySelector(`button[data-type='caps']`);
                     if (capsButton.classList.contains('button_caps')) {
                         this.isCapsLockOn = true
@@ -125,6 +131,7 @@ export class Buttons {
                     if (e.key === 'Shift') {
                         this.isKeyPressed = false;
                         this.btnContainer.classList.remove('button_shift')
+                        window.localStorage.removeItem('shiftActive')
                         const capsButton = document.querySelector(`button[data-type='caps']`);
                         if (capsButton.classList.contains('button_caps')) {
                             this.isCapsLockOn = true
@@ -183,19 +190,25 @@ export class Buttons {
     }
 
     updateButtonContainer() {
-        const buttons = document.querySelectorAll('button')
+        // const buttons = document.querySelectorAll('button')
+        const buttons = document.querySelectorAll('button:not([data-type])');
+
+        let shiftActive = !!window.localStorage.getItem('shiftActive')
         if (this.isCapsLockOn) {
             buttons.forEach(btn => {
                 if (!btn.dataset.type) {
                     let key = btn.dataset.key;
-                    btn.innerHTML = `${key.toUpperCase()}`
+                    let shiftKey = btn.dataset.shiftkey;
+                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toUpperCase() : key.toUpperCase()}`
                 }
             })
 
         } else {
             buttons.forEach(btn => {
                 let key = btn.dataset.key;
-                btn.innerHTML = `${key.toLowerCase()}`
+                let shiftKey = btn.dataset.shiftkey;
+                btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toLowerCase() : key.toLowerCase()}`
+
             })
         }
 
@@ -260,10 +273,19 @@ export class Buttons {
         let isShiftActive = shiftButton && shiftButton.classList.contains('button_shift');
         let isCapsLockActive = capsButton && capsButton.classList.contains('button_caps');
 
-        if (isShiftActive && !isCapsLockActive || !isShiftActive && isCapsLockActive) {
+        let shiftActive = !!window.localStorage.getItem('shiftActive')
+
+        if (isShiftActive && !isCapsLockActive) {
+            return shiftActive ? this.shiftKey.toUpperCase() : this.key.toUpperCase();
+
+        } else if(!isShiftActive && isCapsLockActive){
             return this.key.toUpperCase();
 
-        } else {
+        } else if(isShiftActive && isCapsLockActive){
+            return shiftActive  ? this.shiftKey.toLowerCase() :  this.key.toLowerCase();
+        }
+
+        else {
             return this.key.toLowerCase();
         }
     }
@@ -280,6 +302,7 @@ export class Buttons {
     shift() {
         const button_shift = document.querySelector(`button[data-type="shift"]`);
         this.isCapsLockOn = !button_shift.classList.contains('button_shift');
+        window.localStorage.setItem('shiftActive', this.isCapsLockOn)
         this.updateButtonContainer()
     }
 
