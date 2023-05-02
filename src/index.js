@@ -20,7 +20,7 @@ const generateHtml= () => {
             <textarea rows="10"></textarea>
             <div class="keyboard"></div>
             <h2>Клавиатура создана в операционной системе MacOs</h2>
-            <h3>Смена языка не реализована</h3>
+            <h3>Смена языка по левой клавише CTRL + левая OPTION</h3>
         </div>`
 }
 

@@ -1,14 +1,20 @@
+
 export class Buttons {
-    constructor(node, {key, shiftKey, code, width, type, ...rest}) {
+    constructor(node, {key, shiftKey, keyEn, shiftKeyEn,  lang, code, width, type, ...rest}) {
         this.node = node;
         this.key = key;
         this.shiftKey = shiftKey;
+        this.keyEn = keyEn;
+        this.shiftKeyEn = shiftKeyEn;
+        this.lang = lang;
         this.code = code;
         this.width = width;
         this.type = type;
         this.isCapsLockOn = false;
         this.btnContainer = null;
         this.isKeyPressed = false;
+        this.curLang = 'ru';
+        this.currentLanguage = localStorage.getItem('language') || this.curLang;
     }
 
     generateButtons() {
@@ -17,11 +23,61 @@ export class Buttons {
         this.btnContainer.style.width = `${this.width * 60}px`;
         this.btnContainer.setAttribute('data-code', this.code);
         this.btnContainer.setAttribute('data-key', this.key);
-        this.btnContainer.innerHTML = `${this.key}`
+        this.btnContainer.setAttribute('data-keyen', this.keyEn);
+
+        this.btnContainer.innerHTML = `${this.currentLanguage === "ru" ? this.key : this.keyEn}`
+
+
+        if(this.lang === 'true'){
+
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'ControlLeft') {
+                    window.localStorage.setItem('ctrlActive', 'true');
+                } else if (e.code === 'AltLeft'){
+                    window.localStorage.setItem('OptionActive', 'true');
+                }
+
+                this.toggleLang()
+                const capsButton = document.querySelector(`button[data-type='caps']`);
+                if (capsButton.classList.contains('button_caps')) {
+                    this.isCapsLockOn = true
+                    this.updateButtonContainer()
+                } else {
+                    this.isCapsLockOn = false
+                    this.updateButtonContainer()
+                }
+
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (e.code === 'ControlLeft') {
+                    localStorage.setItem('ctrlActive', 'false');
+                } else if (e.code === 'AltLeft') {
+                    localStorage.setItem('OptionActive', 'false');
+                }
+
+                this.toggleLang();
+                const capsButton = document.querySelector(`button[data-type='caps']`);
+                if (capsButton.classList.contains('button_caps')) {
+                    this.isCapsLockOn = true
+                    this.updateButtonContainer()
+                } else {
+                    this.isCapsLockOn = false
+                    this.updateButtonContainer()
+                }
+            });
+
+        }
 
         if(this.shiftKey){
-            this.btnContainer.setAttribute('data-shiftKey', this.shiftKey);
+            this.btnContainer.setAttribute('data-shiftkey', this.shiftKey);
         }
+
+        if(this.shiftKeyEn){
+            this.btnContainer.setAttribute('data-shiftkeyen', this.shiftKeyEn);
+        }
+
+
 
         if (this.type) {
             this.btnContainer.className = 'button button_colored'
@@ -190,16 +246,24 @@ export class Buttons {
     }
 
     updateButtonContainer() {
-        // const buttons = document.querySelectorAll('button')
         const buttons = document.querySelectorAll('button:not([data-type])');
 
         let shiftActive = !!window.localStorage.getItem('shiftActive')
+        let lang = window.localStorage.getItem('language')
+
         if (this.isCapsLockOn) {
             buttons.forEach(btn => {
                 if (!btn.dataset.type) {
                     let key = btn.dataset.key;
                     let shiftKey = btn.dataset.shiftkey;
-                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toUpperCase() : key.toUpperCase()}`
+                    let keyEn = btn.dataset.keyen;
+                    let shiftKeyEn = btn.dataset.shiftkeyen;
+                    if(lang === 'ru'){
+                        btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toUpperCase() : key.toUpperCase()}`
+                    } else {
+                        btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toUpperCase() : keyEn.toUpperCase()}`
+                    }
+
                 }
             })
 
@@ -207,8 +271,13 @@ export class Buttons {
             buttons.forEach(btn => {
                 let key = btn.dataset.key;
                 let shiftKey = btn.dataset.shiftkey;
-                btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toLowerCase() : key.toLowerCase()}`
-
+                let keyEn = btn.dataset.keyen;
+                let shiftKeyEn = btn.dataset.shiftkeyen;
+                if(lang === 'ru') {
+                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toLowerCase() : key.toLowerCase()}`
+                } else {
+                    btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toLowerCase() : keyEn.toLowerCase()}`
+                }
             })
         }
 
@@ -272,27 +341,40 @@ export class Buttons {
 
         let isShiftActive = shiftButton && shiftButton.classList.contains('button_shift');
         let isCapsLockActive = capsButton && capsButton.classList.contains('button_caps');
-
         let shiftActive = !!window.localStorage.getItem('shiftActive')
+        let lang = window.localStorage.getItem('language')
 
         if (isShiftActive && !isCapsLockActive) {
-            return shiftActive ? this.shiftKey.toUpperCase() : this.key.toUpperCase();
+            if(lang === 'ru'){
+                return shiftActive ? this.shiftKey.toUpperCase() : this.key.toUpperCase();
+            } else {
+                return shiftActive ? this.shiftKeyEn.toUpperCase() : this.keyEn.toUpperCase();
+            }
+
 
         } else if(!isShiftActive && isCapsLockActive){
-            return this.key.toUpperCase();
+            if(lang  === 'ru') {
+                return this.key.toUpperCase();
+            } else {
+                return this.keyEn.toUpperCase();
+            }
 
         } else if(isShiftActive && isCapsLockActive){
-            return shiftActive  ? this.shiftKey.toLowerCase() :  this.key.toLowerCase();
+            if(lang  === 'ru') {
+                return shiftActive ? this.shiftKey.toLowerCase() : this.key.toLowerCase();
+            } else {
+                return shiftActive ? this.shiftKeyEn.toLowerCase() : this.keyEn.toLowerCase();
+            }
         }
 
         else {
-            return this.key.toLowerCase();
+            return lang === 'ru' ? this.key.toLowerCase() : this.keyEn.toLowerCase();
         }
     }
 
 
     ctrl() {
-        console.log('не выполнено')
+       return
     }
 
     cmd() {
@@ -307,7 +389,23 @@ export class Buttons {
     }
 
     option() {
-        console.log('не выполнено')
+        return
+    }
+
+    toggleLang(){
+        let ctrl_active = window.localStorage.getItem('ctrlActive') === 'true'
+        let opt_active = window.localStorage.getItem('OptionActive') === 'true'
+
+        if(ctrl_active && opt_active){
+            if(this.currentLanguage === 'ru'){
+                this.currentLanguage = 'en'
+                localStorage.setItem('language', this.currentLanguage );
+            } else {
+                this.currentLanguage = 'ru'
+                localStorage.setItem('language', this.currentLanguage );
+            }
+        }
+
     }
 
 
