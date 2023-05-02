@@ -1,6 +1,5 @@
-
 export class Buttons {
-    constructor(node, {key, shiftKey, keyEn, shiftKeyEn,  lang, code, width, type, ...rest}) {
+    constructor(node, {key, shiftKey, keyEn, shiftKeyEn, lang, code, width, type, ...rest}) {
         this.node = node;
         this.key = key;
         this.shiftKey = shiftKey;
@@ -27,25 +26,15 @@ export class Buttons {
 
         this.btnContainer.innerHTML = `${this.currentLanguage === "ru" ? this.key : this.keyEn}`
 
-
-        if(this.lang === 'true'){
+        if (this.lang === 'true') {
 
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'ControlLeft') {
                     window.localStorage.setItem('ctrlActive', 'true');
-                } else if (e.code === 'AltLeft'){
+                } else if (e.code === 'AltLeft') {
                     window.localStorage.setItem('OptionActive', 'true');
                 }
-
                 this.toggleLang()
-                const capsButton = document.querySelector(`button[data-type='caps']`);
-                if (capsButton.classList.contains('button_caps')) {
-                    this.isCapsLockOn = true
-                    this.updateButtonContainer()
-                } else {
-                    this.isCapsLockOn = false
-                    this.updateButtonContainer()
-                }
 
             });
 
@@ -55,28 +44,18 @@ export class Buttons {
                 } else if (e.code === 'AltLeft') {
                     localStorage.setItem('OptionActive', 'false');
                 }
-
                 this.toggleLang();
-                const capsButton = document.querySelector(`button[data-type='caps']`);
-                if (capsButton.classList.contains('button_caps')) {
-                    this.isCapsLockOn = true
-                    this.updateButtonContainer()
-                } else {
-                    this.isCapsLockOn = false
-                    this.updateButtonContainer()
-                }
             });
 
         }
 
-        if(this.shiftKey){
+        if (this.shiftKey) {
             this.btnContainer.setAttribute('data-shiftkey', this.shiftKey);
         }
 
-        if(this.shiftKeyEn){
+        if (this.shiftKeyEn) {
             this.btnContainer.setAttribute('data-shiftkeyen', this.shiftKeyEn);
         }
-
 
 
         if (this.type) {
@@ -156,14 +135,9 @@ export class Buttons {
                 this.btnContainer.addEventListener('mouseup', (e) => {
                     this.btnContainer.classList.remove('button_shift')
                     window.localStorage.removeItem('shiftActive')
-                    const capsButton = document.querySelector(`button[data-type='caps']`);
-                    if (capsButton.classList.contains('button_caps')) {
-                        this.isCapsLockOn = true
-                        this.updateButtonContainer()
-                    } else {
-                        this.isCapsLockOn = false
-                        this.updateButtonContainer()
-                    }
+
+                    this.isCapsLockOn = false
+                    this.updateButtonContainer()
 
                 })
 
@@ -188,14 +162,8 @@ export class Buttons {
                         this.isKeyPressed = false;
                         this.btnContainer.classList.remove('button_shift')
                         window.localStorage.removeItem('shiftActive')
-                        const capsButton = document.querySelector(`button[data-type='caps']`);
-                        if (capsButton.classList.contains('button_caps')) {
-                            this.isCapsLockOn = true
-                            this.updateButtonContainer()
-                        } else {
-                            this.isCapsLockOn = false
-                            this.updateButtonContainer()
-                        }
+                        this.isCapsLockOn = false
+                        this.updateButtonContainer()
                     }
                 })
 
@@ -253,17 +221,14 @@ export class Buttons {
 
         if (this.isCapsLockOn) {
             buttons.forEach(btn => {
-                if (!btn.dataset.type) {
-                    let key = btn.dataset.key;
-                    let shiftKey = btn.dataset.shiftkey;
-                    let keyEn = btn.dataset.keyen;
-                    let shiftKeyEn = btn.dataset.shiftkeyen;
-                    if(lang === 'ru'){
-                        btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toUpperCase() : key.toUpperCase()}`
-                    } else {
-                        btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toUpperCase() : keyEn.toUpperCase()}`
-                    }
-
+                let key = btn.dataset.key;
+                let shiftKey = btn.dataset.shiftkey;
+                let keyEn = btn.dataset.keyen;
+                let shiftKeyEn = btn.dataset.shiftkeyen;
+                if (lang === 'ru') {
+                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toUpperCase() : key.toUpperCase()}`
+                } else {
+                    btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toUpperCase() : keyEn.toUpperCase()}`
                 }
             })
 
@@ -273,7 +238,7 @@ export class Buttons {
                 let shiftKey = btn.dataset.shiftkey;
                 let keyEn = btn.dataset.keyen;
                 let shiftKeyEn = btn.dataset.shiftkeyen;
-                if(lang === 'ru') {
+                if (lang === 'ru') {
                     btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toLowerCase() : key.toLowerCase()}`
                 } else {
                     btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toLowerCase() : keyEn.toLowerCase()}`
@@ -345,40 +310,41 @@ export class Buttons {
         let lang = window.localStorage.getItem('language')
 
         if (isShiftActive && !isCapsLockActive) {
-            if(lang === 'ru'){
+            if (lang === 'ru') {
                 return shiftActive ? this.shiftKey.toUpperCase() : this.key.toUpperCase();
             } else {
                 return shiftActive ? this.shiftKeyEn.toUpperCase() : this.keyEn.toUpperCase();
             }
 
 
-        } else if(!isShiftActive && isCapsLockActive){
-            if(lang  === 'ru') {
+        } else if (!isShiftActive && isCapsLockActive) {
+            if (lang === 'ru') {
                 return this.key.toUpperCase();
             } else {
                 return this.keyEn.toUpperCase();
             }
 
-        } else if(isShiftActive && isCapsLockActive){
-            if(lang  === 'ru') {
+        } else if (isShiftActive && isCapsLockActive) {
+            if (lang === 'ru') {
                 return shiftActive ? this.shiftKey.toLowerCase() : this.key.toLowerCase();
             } else {
                 return shiftActive ? this.shiftKeyEn.toLowerCase() : this.keyEn.toLowerCase();
             }
-        }
-
-        else {
+        } else {
             return lang === 'ru' ? this.key.toLowerCase() : this.keyEn.toLowerCase();
         }
+    }
+    option() {
+        return
     }
 
 
     ctrl() {
-       return
+        return
     }
 
     cmd() {
-        console.log('не выполнено')
+        return
     }
 
     shift() {
@@ -388,21 +354,18 @@ export class Buttons {
         this.updateButtonContainer()
     }
 
-    option() {
-        return
-    }
 
-    toggleLang(){
+    toggleLang() {
         let ctrl_active = window.localStorage.getItem('ctrlActive') === 'true'
         let opt_active = window.localStorage.getItem('OptionActive') === 'true'
 
-        if(ctrl_active && opt_active){
-            if(this.currentLanguage === 'ru'){
+        if (ctrl_active && opt_active) {
+            if (this.currentLanguage === 'ru') {
                 this.currentLanguage = 'en'
-                localStorage.setItem('language', this.currentLanguage );
+                localStorage.setItem('language', this.currentLanguage);
             } else {
                 this.currentLanguage = 'ru'
-                localStorage.setItem('language', this.currentLanguage );
+                localStorage.setItem('language', this.currentLanguage);
             }
         }
 
