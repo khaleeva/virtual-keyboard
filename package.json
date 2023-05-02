@@ -8,7 +8,7 @@
     "dev": "webpack --mode development",
     "build": "webpack --node-env=production --mode production",
     "predeploy": "npm run build",
-    "deploy" : "gh-pages -d virtual-keyboard"
+    "deploy": "gh-pages -d virtual-keyboard"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "copy-webpack-plugin": "^11.0.0",
+    "eslint-webpack-plugin": "^4.0.1",
     "html-webpack-plugin": "^5.5.1",
     "mini-css-extract-plugin": "^2.7.5",
     "postcss-preset-env": "^8.3.2"

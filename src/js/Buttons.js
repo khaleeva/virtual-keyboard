@@ -24,7 +24,7 @@ export class Buttons {
         this.btnContainer.setAttribute('data-key', this.key);
         this.btnContainer.setAttribute('data-keyen', this.keyEn);
 
-        this.btnContainer.innerHTML = `${this.currentLanguage === "ru" ? this.key : this.keyEn}`
+        this.btnContainer.innerHTML = `${this.currentLanguage === 'ru' ? this.key : this.keyEn}`;
 
         if (this.lang === 'true') {
 
@@ -34,8 +34,20 @@ export class Buttons {
                 } else if (e.code === 'AltLeft') {
                     window.localStorage.setItem('OptionActive', 'true');
                 }
-                this.toggleLang()
+                this.toggleLang();
 
+                const capsButton = document.querySelector(`button[data-type='caps']`);
+                let shiftActive = window.localStorage.getItem('shiftActive');
+                if (capsButton.classList.contains('button_caps') || shiftActive) {
+                    this.isCapsLockOn = true;
+                    this.updateButtonContainer(true);
+                } else if (capsButton.classList.contains('button_caps') && shiftActive) {
+                    this.isCapsLockOn = false;
+                    this.updateButtonContainer(this.isCapsLockOn);
+                } else {
+                    this.isCapsLockOn = false;
+                    this.updateButtonContainer(this.isCapsLockOn);
+                }
             });
 
             document.addEventListener('keyup', (e) => {
@@ -59,25 +71,25 @@ export class Buttons {
 
 
         if (this.type) {
-            this.btnContainer.className = 'button button_colored'
+            this.btnContainer.className = 'button button_colored';
             this.btnContainer.setAttribute('data-type', this.type);
             this.btnContainer.addEventListener('mousedown', (e) => {
                 const functionName = e.target.dataset.type;
-                this[functionName]()
+                this[functionName]();
                 e.target.classList.add('button_highlight');
                 e.preventDefault();
-            })
+            });
 
             this.btnContainer.addEventListener('mouseup', (e) => {
                 e.target.classList.remove('button_highlight');
-            })
+            });
 
 
             document.addEventListener('keydown', (e) => {
                 if (e.code === this.code) {
                     const functionName = this.type;
                     this[functionName]();
-                    const button = document.querySelector(`button[data-code="${e.code}"]`);
+                    const button = document.querySelector(`button[data-code='${e.code}']`);
                     button.classList.add('button_highlight');
                     e.preventDefault();
                 }
@@ -85,121 +97,109 @@ export class Buttons {
 
             document.addEventListener('keyup', (e) => {
                 if (e.code === this.code) {
-                    const button = document.querySelector(`button[data-code="${e.code}"]`);
+                    const button = document.querySelector(`button[data-code='${e.code}']`);
                     button.classList.remove('button_highlight');
                 }
             });
 
             if (this.type === 'caps') {
                 this.btnContainer.addEventListener('mousedown', (e) => {
-                    this.btnContainer.classList.toggle('button_caps')
-                    this.updateButtonContainer()
-
-                })
+                    this.btnContainer.classList.toggle('button_caps');
+                    this.isCapsLockOn = this.btnContainer.classList.contains('button_caps');
+                    this.updateButtonContainer(this.isCapsLockOn);
+                });
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'CapsLock') {
                         this.isKeyPressed = true;
-                        this.btnContainer.classList.add('button_caps')
-                        this.isCapsLockOn = true
-                        this.updateButtonContainer()
+                        this.btnContainer.classList.add('button_caps');
+                        this.isCapsLockOn = true;
+                        this.updateButtonContainer(this.isCapsLockOn);
                     }
-
-                })
+                });
 
                 document.addEventListener('keyup', (e) => {
                     if (e.key === 'CapsLock') {
                         this.isKeyPressed = false;
-                        this.btnContainer.classList.remove('button_caps')
-                        this.isCapsLockOn = false
-                        this.updateButtonContainer()
+                        this.btnContainer.classList.remove('button_caps');
+                        this.isCapsLockOn = false;
+                        this.updateButtonContainer(this.isCapsLockOn);
                     }
-                })
+                });
 
             }
 
             if (this.type === 'shift') {
                 this.btnContainer.addEventListener('mousedown', (e) => {
-                    this.btnContainer.classList.add('button_shift')
-
+                    this.btnContainer.classList.add('button_shift');
                     const capsButton = document.querySelector(`button[data-type='caps']`);
-                    if (capsButton.classList.contains('button_caps')) {
-                        this.isCapsLockOn = false
-                        this.updateButtonContainer()
-                    } else {
-                        this.isCapsLockOn = true
-                        this.updateButtonContainer()
-                    }
-                })
+                    this.isCapsLockOn = !capsButton.classList.contains('button_caps');
+                    this.updateButtonContainer(this.isCapsLockOn);
+                });
 
                 this.btnContainer.addEventListener('mouseup', (e) => {
-                    this.btnContainer.classList.remove('button_shift')
-                    window.localStorage.removeItem('shiftActive')
-
-                    this.isCapsLockOn = false
-                    this.updateButtonContainer()
-
-                })
+                    this.btnContainer.classList.remove('button_shift');
+                    window.localStorage.removeItem('shiftActive');
+                    const capsButton = document.querySelector(`button[data-type='caps']`);
+                    this.isCapsLockOn = capsButton.classList.contains('button_caps');
+                    this.updateButtonContainer(this.isCapsLockOn);
+                });
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Shift') {
                         this.isKeyPressed = true;
-                        this.btnContainer.classList.add('button_shift')
+                        this.btnContainer.classList.add('button_shift');
                         const capsButton = document.querySelector(`button[data-type='caps']`);
-                        if (capsButton.classList.contains('button_caps')) {
-                            this.isCapsLockOn = false
-                            this.updateButtonContainer()
-                        } else {
-                            this.isCapsLockOn = true
-                            this.updateButtonContainer()
-                        }
+                        this.isCapsLockOn = !capsButton.classList.contains('button_caps');
+                        this.updateButtonContainer(this.isCapsLockOn);
                     }
 
-                })
+                });
 
                 document.addEventListener('keyup', (e) => {
                     if (e.key === 'Shift') {
                         this.isKeyPressed = false;
-                        this.btnContainer.classList.remove('button_shift')
-                        window.localStorage.removeItem('shiftActive')
-                        this.isCapsLockOn = false
-                        this.updateButtonContainer()
+                        this.btnContainer.classList.remove('button_shift');
+                        window.localStorage.removeItem('shiftActive');
+                        const capsButton = document.querySelector(`button[data-type='caps']`);
+                        this.isCapsLockOn = !capsButton.classList.contains('button_caps');
+                        this.updateButtonContainer(this.isCapsLockOn);
                     }
-                })
+                });
 
             }
 
 
         } else {
             this.btnContainer.addEventListener('mousedown', (e) => {
-                this.handleClickChar(e)
+                this.handleClickChar(e);
                 e.target.classList.add('button_highlight');
-            })
+            });
 
             this.btnContainer.addEventListener('mouseup', (e) => {
                 e.target.classList.remove('button_highlight');
-            })
+            });
 
             document.addEventListener('keydown', (e) => this.handleKeyDownChar(e));
 
             document.addEventListener('keyup', (e) => {
                 if (e.code === this.code) {
-                    const button = document.querySelector(`button[data-code="${e.code}"]`);
+                    const button = document.querySelector(`button[data-code='${e.code}']`);
                     button.classList.remove('button_highlight');
                 }
-            })
+            });
 
             if (this.code === 'ArrowUp' || this.code === 'ArrowDown' || this.code === 'ArrowRight' || this.code === 'ArrowLeft') {
-                this.btnContainer.className = 'button button_colored'
+                this.btnContainer.className = 'button button_colored';
             }
         }
 
-        return this.btnContainer
+        return this.btnContainer;
     }
 
     handleKeyDownChar(e) {
         const physicalKey = this.code;
-        const button = document.querySelector(`button[data-code="${e.code}"]`);
+        const button = document.querySelector(`button[data-code='${e.code}']`);
         button.classList.add('button_highlight');
         if (e.code === physicalKey) {
             this.node.value += this.isRegisterChar();
@@ -213,24 +213,24 @@ export class Buttons {
         e.preventDefault();
     }
 
-    updateButtonContainer() {
+    updateButtonContainer(isActive) {
         const buttons = document.querySelectorAll('button:not([data-type])');
+        let shiftActive = window.localStorage.getItem('shiftActive');
+        let lang = window.localStorage.getItem('language');
+        console.log(shiftActive);
 
-        let shiftActive = !!window.localStorage.getItem('shiftActive')
-        let lang = window.localStorage.getItem('language')
-
-        if (this.isCapsLockOn) {
+        if (isActive) {
             buttons.forEach(btn => {
                 let key = btn.dataset.key;
                 let shiftKey = btn.dataset.shiftkey;
                 let keyEn = btn.dataset.keyen;
                 let shiftKeyEn = btn.dataset.shiftkeyen;
                 if (lang === 'ru') {
-                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toUpperCase() : key.toUpperCase()}`
+                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toUpperCase() : key.toUpperCase()}`;
                 } else {
-                    btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toUpperCase() : keyEn.toUpperCase()}`
+                    btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toUpperCase() : keyEn.toUpperCase()}`;
                 }
-            })
+            });
 
         } else {
             buttons.forEach(btn => {
@@ -239,22 +239,22 @@ export class Buttons {
                 let keyEn = btn.dataset.keyen;
                 let shiftKeyEn = btn.dataset.shiftkeyen;
                 if (lang === 'ru') {
-                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toLowerCase() : key.toLowerCase()}`
+                    btn.innerHTML = `${shiftActive && shiftKey ? shiftKey.toLowerCase() : key.toLowerCase()}`;
                 } else {
-                    btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toLowerCase() : keyEn.toLowerCase()}`
+                    btn.innerHTML = `${shiftActive && shiftKeyEn ? shiftKeyEn.toLowerCase() : keyEn.toLowerCase()}`;
                 }
-            })
+            });
         }
 
     }
 
 
     del() {
-        this.node.focus()
+        this.node.focus();
         const currentValue = this.node.value;
         const start = this.node.selectionStart;
         if (start < currentValue.length) {
-            this.node.value = currentValue.slice(0, start) + currentValue.slice(start + 1)
+            this.node.value = currentValue.slice(0, start) + currentValue.slice(start + 1);
             this.node.selectionStart = start;
             this.node.selectionEnd = start;
         } else {
@@ -265,7 +265,7 @@ export class Buttons {
     }
 
     backspace() {
-        this.node.focus()
+        this.node.focus();
         const currentValue = this.node.value;
         const start = this.node.selectionStart;
         if (start === 0) {
@@ -295,19 +295,18 @@ export class Buttons {
     }
 
     caps() {
-        const button_caps = document.querySelector(`button[data-type="caps"]`);
+        const button_caps = document.querySelector(`button[data-type='caps']`);
         this.isCapsLockOn = !button_caps.classList.contains('button_caps');
-        this.updateButtonContainer()
+        this.updateButtonContainer(this.isCapsLockOn);
     }
 
     isRegisterChar() {
         const shiftButton = document.querySelector(`button[data-type='shift']`);
         const capsButton = document.querySelector(`button[data-type='caps']`);
-
         let isShiftActive = shiftButton && shiftButton.classList.contains('button_shift');
         let isCapsLockActive = capsButton && capsButton.classList.contains('button_caps');
-        let shiftActive = !!window.localStorage.getItem('shiftActive')
-        let lang = window.localStorage.getItem('language')
+        let shiftActive = !!window.localStorage.getItem('shiftActive');
+        let lang = window.localStorage.getItem('language');
 
         if (isShiftActive && !isCapsLockActive) {
             if (lang === 'ru') {
@@ -315,8 +314,6 @@ export class Buttons {
             } else {
                 return shiftActive ? this.shiftKeyEn.toUpperCase() : this.keyEn.toUpperCase();
             }
-
-
         } else if (!isShiftActive && isCapsLockActive) {
             if (lang === 'ru') {
                 return this.key.toUpperCase();
@@ -334,37 +331,39 @@ export class Buttons {
             return lang === 'ru' ? this.key.toLowerCase() : this.keyEn.toLowerCase();
         }
     }
+
+
     option() {
-        return
+        return;
     }
 
 
     ctrl() {
-        return
+        return;
     }
 
     cmd() {
-        return
+        return;
     }
 
     shift() {
-        const button_shift = document.querySelector(`button[data-type="shift"]`);
+        const button_shift = document.querySelector(`button[data-type='shift']`);
         this.isCapsLockOn = !button_shift.classList.contains('button_shift');
-        window.localStorage.setItem('shiftActive', this.isCapsLockOn)
-        this.updateButtonContainer()
+        window.localStorage.setItem('shiftActive', this.isCapsLockOn);
+        this.updateButtonContainer(this.isCapsLockOn);
     }
 
 
     toggleLang() {
-        let ctrl_active = window.localStorage.getItem('ctrlActive') === 'true'
-        let opt_active = window.localStorage.getItem('OptionActive') === 'true'
+        let ctrlActive = window.localStorage.getItem('ctrlActive') === 'true';
+        let optActive = window.localStorage.getItem('OptionActive') === 'true';
 
-        if (ctrl_active && opt_active) {
+        if (ctrlActive && optActive) {
             if (this.currentLanguage === 'ru') {
-                this.currentLanguage = 'en'
+                this.currentLanguage = 'en';
                 localStorage.setItem('language', this.currentLanguage);
             } else {
-                this.currentLanguage = 'ru'
+                this.currentLanguage = 'ru';
                 localStorage.setItem('language', this.currentLanguage);
             }
         }
