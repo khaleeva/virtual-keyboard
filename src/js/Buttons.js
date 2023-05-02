@@ -203,14 +203,22 @@ export class Buttons {
         const button = document.querySelector(`button[data-code='${e.code}']`);
         button.classList.add('button_highlight');
         if (e.code === physicalKey) {
-            this.node.value += this.isRegisterChar();
+            let start = this.node.selectionStart;
+            let end = this.node.selectionEnd;
+            this.node.value = this.node.value.substring(0, start) + this.isRegisterChar() + this.node.value.substring(end);
+            this.node.selectionStart = start + 1;
+            this.node.selectionEnd = start + 1;
             e.preventDefault();
         }
 
     }
 
     handleClickChar(e) {
-        this.node.value += this.isRegisterChar();
+        let start = this.node.selectionStart;
+        let end = this.node.selectionEnd;
+        this.node.value = this.node.value.substring(0, start) + this.isRegisterChar() + this.node.value.substring(end);
+        this.node.selectionStart = start + 1;
+        this.node.selectionEnd = start + 1;
         e.preventDefault();
     }
 
