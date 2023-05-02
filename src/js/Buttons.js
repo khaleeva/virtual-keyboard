@@ -1,3 +1,4 @@
+
 export class Buttons {
     constructor(node, {key, shiftKey, keyEn, shiftKeyEn, lang, code, width, type, ...rest}) {
         this.node = node;
@@ -11,7 +12,6 @@ export class Buttons {
         this.type = type;
         this.isCapsLockOn = false;
         this.btnContainer = null;
-        this.isKeyPressed = false;
         this.curLang = 'ru';
         this.currentLanguage = localStorage.getItem('language') || this.curLang;
     }
@@ -38,15 +38,18 @@ export class Buttons {
 
                 const capsButton = document.querySelector(`button[data-type='caps']`);
                 let shiftActive = window.localStorage.getItem('shiftActive');
-                if (capsButton.classList.contains('button_caps') || shiftActive) {
+                if (capsButton.classList.contains('button_caps') && !shiftActive) {
                     this.isCapsLockOn = true;
                     this.updateButtonContainer(true);
                 } else if (capsButton.classList.contains('button_caps') && shiftActive) {
                     this.isCapsLockOn = false;
-                    this.updateButtonContainer(this.isCapsLockOn);
+                    this.updateButtonContainer();
+                } else if (!capsButton.classList.contains('button_caps') && shiftActive) {
+                    this.isCapsLockOn = true;
+                    this.updateButtonContainer();
                 } else {
                     this.isCapsLockOn = false;
-                    this.updateButtonContainer(this.isCapsLockOn);
+                    this.updateButtonContainer();
                 }
             });
 
@@ -106,24 +109,22 @@ export class Buttons {
                 this.btnContainer.addEventListener('mousedown', (e) => {
                     this.btnContainer.classList.toggle('button_caps');
                     this.isCapsLockOn = this.btnContainer.classList.contains('button_caps');
-                    this.updateButtonContainer(this.isCapsLockOn);
+                    this.updateButtonContainer();
                 });
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'CapsLock') {
-                        this.isKeyPressed = true;
                         this.btnContainer.classList.add('button_caps');
                         this.isCapsLockOn = true;
-                        this.updateButtonContainer(this.isCapsLockOn);
+                        this.updateButtonContainer();
                     }
                 });
 
                 document.addEventListener('keyup', (e) => {
                     if (e.key === 'CapsLock') {
-                        this.isKeyPressed = false;
                         this.btnContainer.classList.remove('button_caps');
                         this.isCapsLockOn = false;
-                        this.updateButtonContainer(this.isCapsLockOn);
+                        this.updateButtonContainer();
                     }
                 });
 
@@ -134,7 +135,7 @@ export class Buttons {
                     this.btnContainer.classList.add('button_shift');
                     const capsButton = document.querySelector(`button[data-type='caps']`);
                     this.isCapsLockOn = !capsButton.classList.contains('button_caps');
-                    this.updateButtonContainer(this.isCapsLockOn);
+                    this.updateButtonContainer();
                 });
 
                 this.btnContainer.addEventListener('mouseup', (e) => {
@@ -142,28 +143,28 @@ export class Buttons {
                     window.localStorage.removeItem('shiftActive');
                     const capsButton = document.querySelector(`button[data-type='caps']`);
                     this.isCapsLockOn = capsButton.classList.contains('button_caps');
-                    this.updateButtonContainer(this.isCapsLockOn);
+                    this.updateButtonContainer();
                 });
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Shift') {
-                        this.isKeyPressed = true;
                         this.btnContainer.classList.add('button_shift');
                         const capsButton = document.querySelector(`button[data-type='caps']`);
                         this.isCapsLockOn = !capsButton.classList.contains('button_caps');
-                        this.updateButtonContainer(this.isCapsLockOn);
+                        console.log( 'DOWN', this.isCapsLockOn);
+                        this.updateButtonContainer();
                     }
 
                 });
 
                 document.addEventListener('keyup', (e) => {
                     if (e.key === 'Shift') {
-                        this.isKeyPressed = false;
                         this.btnContainer.classList.remove('button_shift');
                         window.localStorage.removeItem('shiftActive');
                         const capsButton = document.querySelector(`button[data-type='caps']`);
                         this.isCapsLockOn = !capsButton.classList.contains('button_caps');
-                        this.updateButtonContainer(this.isCapsLockOn);
+                        console.log( 'UP', this.isCapsLockOn);
+                        this.updateButtonContainer();
                     }
                 });
 
@@ -213,13 +214,12 @@ export class Buttons {
         e.preventDefault();
     }
 
-    updateButtonContainer(isActive) {
+    updateButtonContainer() {
         const buttons = document.querySelectorAll('button:not([data-type])');
         let shiftActive = window.localStorage.getItem('shiftActive');
         let lang = window.localStorage.getItem('language');
-        console.log(shiftActive);
 
-        if (isActive) {
+        if (this.isCapsLockOn) {
             buttons.forEach(btn => {
                 let key = btn.dataset.key;
                 let shiftKey = btn.dataset.shiftkey;
@@ -297,7 +297,7 @@ export class Buttons {
     caps() {
         const button_caps = document.querySelector(`button[data-type='caps']`);
         this.isCapsLockOn = !button_caps.classList.contains('button_caps');
-        this.updateButtonContainer(this.isCapsLockOn);
+        this.updateButtonContainer();
     }
 
     isRegisterChar() {
@@ -350,7 +350,7 @@ export class Buttons {
         const button_shift = document.querySelector(`button[data-type='shift']`);
         this.isCapsLockOn = !button_shift.classList.contains('button_shift');
         window.localStorage.setItem('shiftActive', this.isCapsLockOn);
-        this.updateButtonContainer(this.isCapsLockOn);
+        this.updateButtonContainer();
     }
 
 
